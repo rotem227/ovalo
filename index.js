@@ -6,7 +6,3 @@ export const useSegment = useSegmentHook;
 export const useInitStore = useInitStoreHook;
 
 export default Store;
-
-window.ovalo = {
-    store: Store,
-};

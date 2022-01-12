@@ -109,3 +109,7 @@ class StoreInstance {
         this.state = config;
     }
 }
+
+window.ovalo = {
+    store: Store,
+};
