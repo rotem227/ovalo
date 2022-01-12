@@ -7,4 +7,6 @@ export const useInitStore = useInitStoreHook;
 
 export default Store;
 
-window.ovalo.store = Store;
+window.ovalo = {
+    store: Store,
+};
