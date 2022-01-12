@@ -53,26 +53,24 @@ class StoreInstance {
 
     updateState( key, value ) {
         return new Promise( async ( res ) => {
-            let newState;
-
             if ( 'function' === typeof value ) {
                 const stateValue = this.state[ key ].state;
                 const prevState = isObject( stateValue ) ? { ...stateValue } : stateValue;
 
-                newState = value( prevState );
+                value = value( prevState );
+                
+                return res( this.updateState( key, value ) );
+            } else if ( value instanceof Promise ) {
+                value = await value;
 
-                if ( newState instanceof Promise ) {
-                    newState = await newState;
-                }
-            } else {
-                newState = value;
+                return res( this.updateState( key, value ) );
             }
 
-            this.state[ key ].state = newState;
+            this.state[ key ].state = value;
 
-            Object.values( this.stack[ key ] ).forEach( ( callback ) => callback( newState ) );
+            Object.values( this.stack[ key ] ).forEach( ( callback ) => callback( value ) );
 
-            res( newState );
+            res( value );
         } );
     }
 
