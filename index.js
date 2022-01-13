@@ -1,12 +1,12 @@
 import { default as useSegmentHook } from './use-segment';
-import { default as useInitStoreHook } from './use-init-store';
-import Store from './store';
+import { default as useInitSegmentsHook } from './use-init-segments';
+import Segments from './segments';
 
 export const useSegment = useSegmentHook;
-export const useInitStore = useInitStoreHook;
+export const useInitSegments = useInitSegmentsHook;
 
-export default Store;
+export default Segments;
 
 window.ovalo = {
-    store: Store,
+    segments: Segments,
 };

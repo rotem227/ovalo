@@ -2,24 +2,24 @@ const isObject = ( value ) => {
   return value !== null && typeof value === 'object' && Array.isArray( value ) === false;
 }
 
-const stores = {};
+const groups = {};
 
-export default class Store {
-    static use( key, name = 'default' ) {
-        return stores[ name ].use( key );
+export default class Segments {
+    static useSegment( key, group = 'default' ) {
+        return groups[ group ].useSegment( key );
     }
 
-    static init( config, name = 'default' ) {        
-        stores[ name ] = new StoreInstance( config, name );
+    static init( config, group = 'default' ) {        
+        groups[ group ] = new Segment( config, group );
 
-        return stores[ name ];
+        return groups[ group ];
     }
 }
 
-class StoreInstance {
+class Segment {
     isInitialized = false;
 
-    name = '';
+    group = '';
 
     stack = {};
 
@@ -88,8 +88,12 @@ class StoreInstance {
         }
     }
     
-    use( key ) {
+    useSegment( key ) {
         const prop = this.state[ key ];
+
+        if ( ! prop.hasOwnProperty( 'state' ) ) {
+            throw new Error( `Missing segment name: '${ key }' in the segments config.` );
+        }
 
         return {
             state: isObject( prop.state ) ? { ...prop.state } : prop.state,
@@ -99,10 +103,10 @@ class StoreInstance {
         };
     }
 
-    constructor( config, name ) {
+    constructor( config, group ) {
         this.isInitialized = true;
 
-        this.name = name;
+        this.group = group;
 
         this.state = config;
     }
