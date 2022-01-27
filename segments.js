@@ -2,21 +2,29 @@ const isObject = ( value ) => {
   return value !== null && typeof value === 'object' && Array.isArray( value ) === false;
 }
 
-const groups = {};
-
 export default class Segments {
+    static groups = {};
+
+    static add( key, value, group = 'default' ) {
+        if ( this.groups[ group ].state.hasOwnProperty( key ) ) {
+            throw new Error( 'Segment key is already exist, please use a different key.' );
+        }
+        
+        this.groups[ group ].state[ key ] = value;
+    }
+    
     static useSegment( key, group = 'default' ) {
-        return groups[ group ].useSegment( key );
+        return this.groups[ group ].useSegment( key );
     }
 
     static init( config, group = 'default' ) {        
-        groups[ group ] = new Segment( config, group );
+        this.groups[ group ] = new Group( config, group );
 
-        return groups[ group ];
+        return this.groups[ group ];
     }
 }
 
-class Segment {
+class Group {
     isInitialized = false;
 
     group = '';
@@ -106,7 +114,7 @@ class Segment {
     constructor( config, group ) {
         this.isInitialized = true;
 
-        this.group = group;
+        this.name = group;
 
         this.state = config;
     }
