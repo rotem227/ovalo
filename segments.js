@@ -13,8 +13,8 @@ export default class Segments {
         this.groups[ group ].state[ key ] = value;
     }
     
-    static useSegment( key, group = 'default' ) {
-        return this.groups[ group ].useSegment( key );
+    static use( key, group = 'default' ) {
+        return this.groups[ group ].use( key );
     }
 
     static init( config, group = 'default' ) {        
@@ -96,7 +96,7 @@ class Group {
         }
     }
     
-    useSegment( key ) {
+    use( key ) {
         const prop = this.state[ key ];
 
         if ( ! prop.hasOwnProperty( 'state' ) ) {
@@ -104,7 +104,7 @@ class Group {
         }
 
         return {
-            state: isObject( prop.state ) ? { ...prop.state } : prop.state,
+            initial: isObject( prop.state ) ? { ...prop.state } : prop.state,
             actions: isObject( prop.actions ) ? { ...prop.actions } : prop.actions,
             dispatch: ( value ) => this.dispatch( key, value ),
             register: ( callback ) => this.register( key, callback ),
