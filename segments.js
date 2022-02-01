@@ -2,6 +2,16 @@ const isObject = ( value ) => {
   return value !== null && typeof value === 'object' && Array.isArray( value ) === false;
 }
 
+const cloneValue = ( value ) => {
+    if ( Array.isArray( value ) ) {
+        return [ ...value ];
+    } else if ( isObject( value ) ) {
+        return { ...value };
+    }
+
+    return value;
+}
+
 export default class Segments {
     static groups = {};
 
@@ -63,7 +73,7 @@ class Group {
         return new Promise( async ( res ) => {
             if ( 'function' === typeof value ) {
                 const stateValue = this.state[ key ].state;
-                const prevState = isObject( stateValue ) ? { ...stateValue } : stateValue;
+                const prevState = cloneValue( stateValue );
 
                 value = value( prevState );
                 
@@ -104,8 +114,9 @@ class Group {
         }
 
         return {
-            initial: isObject( prop.state ) ? { ...prop.state } : prop.state,
-            actions: isObject( prop.actions ) ? { ...prop.actions } : prop.actions,
+            initialState: cloneValue( prop.state ),
+            getState: () => prop.state,
+            actions: cloneValue( prop.actions ),
             dispatch: ( value ) => this.dispatch( key, value ),
             register: ( callback ) => this.register( key, callback ),
         };
