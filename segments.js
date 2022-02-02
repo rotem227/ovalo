@@ -73,6 +73,7 @@ class Group {
         return new Promise( async ( res ) => {
             if ( 'function' === typeof value ) {
                 const stateValue = this.state[ key ].state;
+
                 const prevState = cloneValue( stateValue );
 
                 value = value( prevState );
@@ -86,7 +87,9 @@ class Group {
 
             this.state[ key ].state = value;
 
-            Object.values( this.stack[ key ] ).forEach( ( callback ) => callback( value ) );
+            if ( this.stack[ key ] ) {
+                Object.values( this.stack[ key ] ).forEach( ( callback ) => callback( value ) );
+            }
 
             res( value );
         } );
@@ -115,7 +118,7 @@ class Group {
 
         return {
             initialState: cloneValue( prop.state ),
-            getState: () => prop.state,
+            getState: () => cloneValue( prop.state ),
             actions: cloneValue( prop.actions ),
             dispatch: ( value ) => this.dispatch( key, value ),
             register: ( callback ) => this.register( key, callback ),
